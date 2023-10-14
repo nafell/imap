@@ -336,7 +336,7 @@ async function seedProximalTables(
                 },
               },
               accepted: paymentCsvBool(restaurantCsv.現金),
-              details: "現金可能",
+              details: paymentCsvBool(restaurantCsv.現金) ? "現金可能" : null,
             },
             {
               paymentType: {
@@ -383,7 +383,7 @@ async function seedProximalTables(
                 },
               },
               accepted: paymentCsvBool(restaurantCsv.交通系IC),
-              details: "Suica, PASMO, etc.",
+              details: paymentCsvBool(restaurantCsv.交通系IC) ? "Suica, PASMO, etc." : null,
             },
           ],
         },
