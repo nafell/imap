@@ -8,5 +8,5 @@ export function generateUrlId() {
 }
 
 export function generateRouteId(restaurantId: string, stepNumber: number) {
-  return `${restaurantId}${('0000'+stepNumber).slice(-4)}${generateUrlId()}`;
+  return `${restaurantId}${("0000" + stepNumber).slice(-4)}${generateUrlId()}`;
 }

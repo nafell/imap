@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import  csv from "csvtojson";
+import csv from "csvtojson";
 
 import {
   DishTraitOptionalDefaults,
@@ -258,7 +258,7 @@ async function seedProximalTables(
         address: restaurantCsv.住所,
         longitude: 0,
         latitude: 0,
-        travelTime: 0+parseInt(restaurantCsv.片道時間_分), //parseInt(restaurantCsv.片道時間_分)
+        travelTime: 0 + parseInt(restaurantCsv.片道時間_分), //parseInt(restaurantCsv.片道時間_分)
         travelDistance: parseInt(restaurantCsv.道のり距離_m),
         restaurantOpens: {
           create: [
@@ -336,7 +336,7 @@ async function seedProximalTables(
                 },
               },
               accepted: paymentCsvBool(restaurantCsv.現金),
-              details: "可能",
+              details: "現金可能",
             },
             {
               paymentType: {
@@ -383,7 +383,7 @@ async function seedProximalTables(
                 },
               },
               accepted: paymentCsvBool(restaurantCsv.交通系IC),
-              details: "可能",
+              details: "Suica, PASMO, etc.",
             },
           ],
         },
@@ -400,8 +400,6 @@ async function seedProximalTables(
   );
   console.log(restaurantNameIdMap);
   console.log(logLabel, "Retrived mapping for restaurants");
-
-
 
   type DishCsvType = {
     ファイル名_確認用: string;
@@ -473,7 +471,6 @@ async function seedProximalTables(
   console.log(dishNameIdMap);
   console.log(logLabel, "Retrived mapping for dishes");
 
-
   type RouteWithIds = {
     id: string;
     description?: string;
@@ -485,16 +482,16 @@ async function seedProximalTables(
   };
   type RoutesOfRestauratns = {
     routes: RouteWithIds[];
-  }
+  };
 
-  const routeCsv = await csv({noheader:true, output:"csv"}).fromFile("./prisma/csv/route.csv");
+  const routeCsv = await csv({ noheader: true, output: "csv" }).fromFile("./prisma/csv/route.csv");
   console.log(logLabel, "Loaded route.csv");
 
   const routeMatryoshka: RoutesOfRestauratns[] = [];
   for (let line = 0; line < routeCsv.length; line += 5) {
     const routeRestaurantCsv = routeCsv.slice(line, line + 4);
     const routeStepCount = routeRestaurantCsv[0].length;
-    routeMatryoshka.push({routes: []});
+    routeMatryoshka.push({ routes: [] });
     const restaurantCount = routeMatryoshka.length - 1;
     for (let rcounter = 1; rcounter < routeStepCount; rcounter++) {
       if (routeRestaurantCsv[0][rcounter] === "") break;
@@ -521,7 +518,7 @@ async function seedProximalTables(
   console.log(logLabel, "Created route payloads");
 
   const routePayloads = routeMatryoshka.flatMap((restaurant) => restaurant.routes);
-  console.log("Number of routes payload:", routePayloads.length)
+  console.log("Number of routes payload:", routePayloads.length);
 
   const routePromises = routePayloads.map((routePayload) => {
     return prisma.route.create({
@@ -547,7 +544,7 @@ async function seedProximalTables(
   console.log(logLabel, "Created queries for routes");
 
   const routeRecords = await prisma.$transaction(routePromises);
-  console.log(logLabel, "Transaction completed for routes"); 
+  console.log(logLabel, "Transaction completed for routes");
   console.log("Number of routes:", routeRecords.length);
 
   console.log("payload == record check:", routePayloads.length === routeRecords.length);
@@ -569,11 +566,14 @@ function generatePaymentDetails(names: string[], values: string[]): string {
     throw new Error("names.length !== values.length");
   }
 
-  const details = names
-    .map((name, index) => (paymentCsvBool(values[index]) ? name : ""))
-    .join(", ");
+  const details = names.map((name, index) => {
+    return paymentCsvBool(name) ? values[index] : null;
+  });
 
-  return details;
+  const filteredDetails = details.filter((detail) => detail !== undefined && detail !== null);
+
+  // NULL許容カラムだろうが！！！！
+  return filteredDetails.length ? filteredDetails.join(", ") : null;
 }
 
 function paymentCsvBool(value: string) {
@@ -587,10 +587,12 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
+    console.log("Seeding completed!");
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });
