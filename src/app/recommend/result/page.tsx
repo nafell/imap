@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { RecommendResponse } from "@/app/api/v-beta/recommend";
 import { RectButton } from "@/components/buttons/RectButton";
@@ -11,24 +14,8 @@ import styles from "./page.module.scss";
 /** @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config} */
 export const dynamic = "force-dynamic"; // SSR
 
-async function getRecommend(params: URLSearchParams) {
-  const recommends = (await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v-beta/recommend?${params.toString()}`,
-    {
-      method: "GET",
-    }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error(err);
-      return notFound();
-    })) as RecommendResponse[];
-
-  return recommends;
-}
-
 /** @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional} */
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -36,15 +23,42 @@ export default async function Page({
   const params = new URLSearchParams(searchParams as Record<string, string>);
   console.log(params.toString());
   /** おすすめ */
-  const recommends = await getRecommend(params);
+
+  const [recommends, setRecommends] = useState<RecommendResponse[]>([]);
+  const [payments, setPayments] = useState<
+    {
+      type: PaymentType;
+      accepted: boolean;
+    }[][]
+  >([]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v-beta/recommend?${params.toString()}`, {
+      method: "GET",
+    })
+      .then(async (res) => {
+        const r = (await res.json()) as RecommendResponse[];
+        setRecommends(r);
+      })
+      .catch((err) => {
+        console.error(err);
+        return notFound();
+      });
+  }, []);
+
+  useEffect(() => {
+    const p = recommends.map((item) => {
+      return item.restaurant.payments.map((payment) => ({
+        type: payment.paymentType.name as PaymentType,
+        accepted: payment.accepted,
+      }));
+    });
+
+    setPayments(p);
+  }, [recommends]);
 
   /** 支払方法 */
-  const payments = recommends.map((item) => {
-    return item.restaurant.payments.map((payment) => ({
-      type: payment.paymentType.name as PaymentType,
-      accepted: payment.accepted,
-    }));
-  });
+
   // const sortedPayments = payments.sort((a, b) => a.type.localeCompare(b.type));
 
   return (
