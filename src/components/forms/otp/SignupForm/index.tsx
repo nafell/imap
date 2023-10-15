@@ -24,23 +24,29 @@ const SignupForm = ({ className = "" }: SignupFormProps) => {
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <form noValidate onSubmit={handleSubmit(onSubmit)} className={className}>
           <div className="relative w-full">
-            <BasicTextField
-              name="studentId"
-              control={control}
-              label="学籍番号"
-              required
-              inputProps={{ inputMode: "text", maxLength: 8 }}
-            />
-            {/* <span className="absolute inset-y-0 right-0 my-auto h-fit pb-2 text-neutral-800">
-              @tks.iput.ac.jp
-            </span> */}
+            <div className="flex">
+              <div className="-mr-28 h-24 flex-1">
+                <BasicTextField
+                  name="studentId"
+                  control={control}
+                  label="学籍番号"
+                  required
+                  inputProps={{ inputMode: "text" }}
+                />
+              </div>
+              <div className="flex-none">
+                <div className="my-auto h-full pt-5 text-right">@tks.iput.ac.jp</div>
+              </div>
+            </div>
           </div>
-          <BasicCheckbox
-            name="agreePolicy"
-            control={control}
-            label="利用規約に同意します。"
-            required
-          />
+          <div className="h-12">
+            <BasicCheckbox
+              name="agreePolicy"
+              control={control}
+              label="利用規約に同意します。"
+              required
+            />
+          </div>
           <div className="mx-auto w-[88%]">
             <BorderRoundButton type="submit" fontSize="text-2xl">
               Sign Up
