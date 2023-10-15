@@ -260,7 +260,7 @@ async function seedProximalTables(
         address: restaurantCsv.住所,
         longitude: 0,
         latitude: 0,
-        travelTime: 0 + parseInt(restaurantCsv.片道時間_分), //parseInt(restaurantCsv.片道時間_分)
+        travelTime: parseInt(restaurantCsv.片道時間_分), //parseInt(restaurantCsv.片道時間_分)
         travelDistance: parseInt(restaurantCsv.道のり距離_m),
         restaurantOpens: {
           create: [
@@ -587,6 +587,34 @@ function paymentCsvBool(value: string) {
 
 async function main() {
   const { paymentCsvIdMap, dishTraitCsvIdMap, routeTypeCsvIdMap } = await seedDistalTables();
+  // const paymentCsvIdMap = new Map<string, string>([
+  //   ["cash","787d4d93-812f-42d9-9be6-5cea5c022cbb"],
+  //   ["credit","f216da70-03df-4b88-a9cc-60991a91684e"],
+  //   ["qr","ff5cf3e0-13bd-44d3-adff-567b663071f4"],
+  //   ["transport","7a340145-57db-4082-9474-f82af9696fc3"],
+  //   ["other","78e72293-cc67-403d-b672-99c2f0748ded"],
+  // ]);
+
+  // const dishTraitCsvIdMap = new Map<string, string>([
+  //   ["amount","4370890b-45b1-4d4d-84d2-6d7b35cf1df4"],
+  //   ["commonality","2066ab53-9dbf-41cb-9cc0-7f0491203601"],
+  //   ["heaviness","c2119744-6949-44d8-8e95-d932616eccc0"],
+  // ]);
+
+  // const routeTypeCsvIdMap = new Map<string, string>([
+  //   ["到着(目的地)","3bb687b3-cc5a-444c-a07b-f9aa3321bb9b"],
+  //   ["目印","7ed1f09d-cef7-4c0f-b6ba-77915bf179a4"],
+  //   ["直進","b7ba42ba-0a4e-4f3b-84cc-eebef7478d7e"],
+  //   ["右折","8e3f8c40-0ade-440d-ba44-b38953bdfb63"],
+  //   ["左折","49d95910-d090-44f4-b994-305cb6dd0bd2"],
+  //   ["前斜め右","a00a820e-fe81-437e-89c5-1fda16e32849"],
+  //   ["前斜め左","88e9322a-15c3-451a-92d9-de00b9d1db7f"],
+  //   ["後ろ斜め右","f79d35f4-1fcb-4cd7-9ce8-03452abc8797"],
+  //   ["後ろ斜め左","72f1c91e-fc25-468b-86a6-a874120f8dbe"],
+  //   ["階段上り","5cc65216-71a1-42f1-87ba-38a711b71071"],
+  //   ["階段下り","44f4c557-1879-4931-b8cd-a6414b1f17e8"],
+  //   ["エレベーター","303e2a2b-c9a9-40df-9728-793ecdf301c4"],
+  // ]);
 
   await seedProximalTables(paymentCsvIdMap, dishTraitCsvIdMap, routeTypeCsvIdMap);
 }

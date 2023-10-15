@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 
-export const RESTAURANT_ID_NAME_OUTPUT = './restaurantIdName.json';
-export const DISH_ID_NAME_OUTPUT = './dishIdName.json';
+export const RESTAURANT_ID_NAME_OUTPUT = './restaurantNameId.json';
+export const DISH_ID_NAME_OUTPUT = './dishNameId.json';
 
 export function nameIdMapToJson(idNameMap: Map<string, string>) {
   const idName = Array.from(idNameMap).map(([name, id]) => ({ name, id }));
