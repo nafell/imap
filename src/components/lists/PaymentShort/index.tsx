@@ -25,6 +25,8 @@ export function PaymentShort({ payments }: { payments: PaymentShortProps[] }) {
     }
   };
 
+  if (!payments) return <></>;
+
   return (
     <div className="flex items-center justify-end">
       <ul className="w-fit">
