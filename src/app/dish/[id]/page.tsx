@@ -23,6 +23,19 @@ export async function generateStaticParams() {
   }));
 }
 
+/** @see{@link https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config} */
+export const dynamicParams = false; // return a 404 page if the params are not found
+
+/** @see{@link https://nextjs.org/docs/app/api-reference/functions/generate-metadata} */
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const dish = (await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v-beta/dish/${params.id}`
+  ).then((res) => res.json())) as Dish;
+  return {
+    title: `${dish.name} & ${dish.restaurant.name}`,
+  };
+}
+
 async function getDish(id: string) {
   const dish = (await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v-beta/dish/${id}`)
     .then((res) => res.json())
