@@ -11,6 +11,7 @@ import {
 
 import { TimeOnly } from "./seeding/TimeOnly";
 import { generateRouteId, generateUrlId } from "./seeding/urlId";
+import { DISH_ID_NAME_OUTPUT, nameIdMapToJson, RESTAURANT_ID_NAME_OUTPUT, writeJson } from "./thumb";
 
 const prisma = new PrismaClient();
 
@@ -401,6 +402,8 @@ async function seedProximalTables(
   );
   console.log(restaurantNameIdMap);
   console.log(logLabel, "Retrived mapping for restaurants");
+  await writeJson(RESTAURANT_ID_NAME_OUTPUT, nameIdMapToJson(restaurantNameIdMap));
+  console.log(logLabel, "Exported to: ", RESTAURANT_ID_NAME_OUTPUT);
 
   type DishCsvType = {
     ファイル名_確認用: string;
@@ -471,6 +474,8 @@ async function seedProximalTables(
   );
   console.log(dishNameIdMap);
   console.log(logLabel, "Retrived mapping for dishes");
+  await writeJson(DISH_ID_NAME_OUTPUT, nameIdMapToJson(dishNameIdMap));
+  console.log(logLabel, "Exported to: ", DISH_ID_NAME_OUTPUT);
 
   type RouteWithIds = {
     id: string;
