@@ -39,15 +39,16 @@ const logLabel = "[PRISMA SEED]";
 // ========================================
 // ===== CSV mappings
 
-// 正確な値がほしい
 const routeTypeCsvMapping = new Map<string, string>([
   ["到着(目的地)", "arrival"],
   ["目印", "landmark"],
   ["直進", "strait"],
-  ["右折", "right-turn"],
-  ["左折", "left-turn"],
-  ["斜め右", "diagonal-right"],
-  ["斜め左", "diagonal-left"],
+  ["右折", "right"],
+  ["左折", "left"],
+  ["前斜め右", "slightRight"],
+  ["前斜め左", "slightLeft"],
+  ["後ろ斜め右", "sharpRight"],
+  ["後ろ斜め左", "sharpLeft"],
   ["階段上り", "upstairs"],
   ["階段下り", "downstairs"],
   ["エレベーター", "elevator"],
