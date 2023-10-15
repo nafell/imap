@@ -49,8 +49,8 @@ const routeTypeCsvMapping = new Map<string, string>([
   ["前斜め左", "slightLeft"],
   ["後ろ斜め右", "sharpRight"],
   ["後ろ斜め左", "sharpLeft"],
-  ["階段上り", "upstairs"],
-  ["階段下り", "downstairs"],
+  ["階段上り", "stairsUp"],
+  ["階段下り", "stairsDown"],
   ["エレベーター", "elevator"],
 ]);
 
@@ -562,7 +562,7 @@ function parseTimeOnly(timeString: string, type: "open" | "close") {
   return new TimeOnly(hour, minute, seconds);
 }
 
-function generatePaymentDetails(names: string[], values: string[]): string {
+function generatePaymentDetails(names: string[], values: string[]) {
   if (names.length !== values.length) {
     throw new Error("names.length !== values.length");
   }
@@ -573,7 +573,6 @@ function generatePaymentDetails(names: string[], values: string[]): string {
 
   const filteredDetails = details.filter((detail) => detail !== undefined && detail !== null);
 
-  // NULL許容カラムだろうが！！！！
   return filteredDetails.length ? filteredDetails.join(", ") : null;
 }
 
